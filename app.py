@@ -29,6 +29,12 @@ def admin_required(view):
     wrapped_view.__name__ = view.__name__
     return wrapped_view
 
+# Initialize the database if it doesn't exist
+def initialize_db():
+    if not os.path.exists(DB_PATH):
+        from database import init_db
+        init_db()
+
 @app.route('/')
 @login_required
 def index():
@@ -83,6 +89,8 @@ def logout():
 if __name__ == '__main__':
     if not os.path.exists('database'):
         os.makedirs('database')
-    if not os.path.exists(DB_PATH):
-        from database import init_db
+    
+    # Initialize the database if it doesn't exist
+    initialize_db()
+
     app.run(debug=True)
