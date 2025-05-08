@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Inventory Manager</title>
+    <title>Inventory</title>
 </head>
 <body>
     <h1>Inventory Management</h1>
-    <p>Logged in as {{ role }} | <a href="/logout">Logout</a></p>
+    <p>Logged in as {{ role }}</p>
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <ul>
+    {% for item in items %}
+        <li>{{ item.name }} - {{ item.quantity }}
+            {% if role == 'admin' %}
+                <a href="{{ url_for('delete', item_id=item.id) }}">Delete</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+
     {% if role == 'admin' %}
-    <form action="/add" method="POST">
-        <input type="text" name="name" placeholder="Item name" required>
+    <form method="POST" action="/add">
+        <input type="text" name="name" placeholder="Item Name" required>
         <input type="number" name="quantity" placeholder="Quantity" required>
-        <button type="submit">Add Item</button>
+        <input type="submit" value="Add Item">
     </form>
     {% endif %}
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Action</th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>
-                {% if role == 'admin' %}
-                <a href="/delete/{{ item.id }}">Delete</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </body>
 </html>
