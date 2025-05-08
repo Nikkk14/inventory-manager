@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash
 
 conn = sqlite3.connect('database/inventory.db')
 c = conn.cursor()
+
+# Create tables
 c.execute('''
     CREATE TABLE IF NOT EXISTS inventory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -10,6 +12,7 @@ c.execute('''
         quantity INTEGER NOT NULL
     )
 ''')
+
 c.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,8 +21,11 @@ c.execute('''
         role TEXT NOT NULL CHECK(role IN ('admin', 'staff'))
     )
 ''')
+
+# Insert default admin
 admin_password = generate_password_hash('admin123')
 c.execute('INSERT OR IGNORE INTO users (username, password, role) VALUES (?, ?, ?)',
           ('admin', admin_password, 'admin'))
+
 conn.commit()
 conn.close()
